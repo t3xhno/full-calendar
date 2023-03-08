@@ -4,7 +4,7 @@ import FullCalendar from "./components/FullCalendar.vue";
 
 <template>
   <div>
-    <FullCalendar></FullCalendar>
+    <FullCalendar />
   </div>
 </template>
 
