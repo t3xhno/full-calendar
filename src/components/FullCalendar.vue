@@ -1,66 +1,79 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import {
+  EventInput,
+  DateSelectArg,
+  EventClickArg,
+  CalendarOptions,
+} from "@fullcalendar/core";
 import FullCalendar from "@fullcalendar/vue3";
 import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import scrollPlugin from "@fullcalendar/scrollgrid";
+import multiMonthPlugin from "@fullcalendar/multimonth";
 import interactionPlugin from "@fullcalendar/interaction";
 
+/**
+ * Unique ID generator
+ */
 const genId = (function*() {
   let id = 0;
-  while (true) {
-    yield id++;
-    if (id >= 100) id = 0;
-  };
+  while (true) yield id++;
 })();
 
-/**
- * Needs further typing
- */
-interface EventObject {
-  extendedProps: Record<string, unknown>;
-  title: string;
-};
-
-const calendar = ref<typeof FullCalendar | null>(null);
-
-const dayHandler = (e) => {
+const dayHandler = (e: DateSelectArg) => {
   const title = prompt("Please enter a new title for your event");
-  if (calendar.value) {
-    const calendarApi = calendar.value.getApi();
-    calendarApi.addEvent({
-      id: String(genId.next().value),
-      title,
-      start: e.dateStr,
-      end: e.dateStr,
-      allDay: e.allDay,
-      backgroundColor: "blue",
-    });
-  };
+  const calendarApi = e.view.calendar;
+  if (title) calendarApi.addEvent({
+    id: String(genId.next().value),
+    title,
+    start: e.startStr,
+    end: e.endStr,
+    allDay: e.allDay,
+    backgroundColor: "blue",
+    whatever: "lol",
+    thisShould: "go to extended",
+    extendedProps: {
+      theseAre: "also extended, but explicitly",
+    },
+  });
 };
-const eventHandler = (e) => {
-  const eventObj: EventObject = e.event;
-  console.log(eventObj.extendedProps, eventObj.title);
+const eventHandler = (e: EventClickArg) => {
+  console.log(e.event.title, e.event.startStr, e.event.endStr, e.event.extendedProps);
 };
 
-const calendarOptions = {
-  plugins: [dayGridPlugin, interactionPlugin, scrollPlugin],
+const calendarOptions: CalendarOptions = {
+  plugins: [dayGridPlugin, interactionPlugin, scrollPlugin, timeGridPlugin, multiMonthPlugin],
   initialView: "dayGridMonth",
-  dateClick: dayHandler,
+  select: dayHandler,
   eventClick: eventHandler,
   editable: true,
+  eventResizableFromStart: true,
+  dragScroll: true,
+  selectable: true,
+  // selectMirror: true,
+  snapDuration: 1000,
   eventColor: "red",
+  displayEventTime: true,
+  eventTimeFormat: {
+    hour: "numeric",
+    minute: "2-digit",
+    omitZeroMinute: true,
+    meridiem: "narrow",
+  },
+  themeSystem: "bootstrap5",
   events: [
     { title: "Lol", date: "2023-03-07", startEditable: true, backgroundColor: "green", description: "roflmaololi" },
     { title: "Event 2", date: "2023-03-07", hello: "rofl" },
     { title: "Event 3", date: "2023-03-08" },
-  ],
+  ] as EventInput[],
 };
 </script>
 
 <template>
-  <FullCalendar ref="calendar" id="full-cal" :options="calendarOptions">
+  <FullCalendar id="full-cal" :options="calendarOptions">
     <template #eventContent="arg">
-      {{ arg.event.title }}
+      <b>{{ arg.timeText }}</b>
+      <i>{{ arg.event.title }}</i>
     </template>
   </FullCalendar>
 </template>

@@ -9,10 +9,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fullcalendar/bootstrap5": "^6.1.4",
     "@fullcalendar/core": "^6.1.4",
     "@fullcalendar/daygrid": "^6.1.4",
     "@fullcalendar/interaction": "^6.1.4",
+    "@fullcalendar/multimonth": "^6.1.4",
     "@fullcalendar/scrollgrid": "^6.1.4",
+    "@fullcalendar/timegrid": "^6.1.4",
     "@fullcalendar/vue3": "^6.1.4",
     "sass": "^1.58.3",
     "vue": "^3.2.45"
