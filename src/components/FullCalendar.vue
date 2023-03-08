@@ -39,6 +39,7 @@ const dayHandler = (e: DateSelectArg) => {
 };
 const eventHandler = (e: EventClickArg) => {
   console.log(e.event.title, e.event.startStr, e.event.endStr, e.event.extendedProps);
+  if (confirm("Remove the selected event?")) e.event.remove();
 };
 
 const calendarOptions: CalendarOptions = {
